@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>Σύστημα Καταγραφής Μετοχών | GKARAS FINANCE</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0b0f1a;
+            font-family: 'Segoe UI', 'Roboto', 'Orbitron', system-ui, -apple-system, sans-serif;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        .app-container {
+            width: 100%;
+            background: rgba(10, 14, 23, 0.96);
+            backdrop-filter: blur(4px);
+            padding: 4vw 3vw 6vw;
+        }
+
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3vw;
+            border-bottom: 0.6vw solid #2affb6;
+            padding-bottom: 4vw;
+            margin-bottom: 6vw;
+            text-align: center;
+        }
+
+        .logo h1 {
+            font-size: clamp(2rem, 10vw, 8rem);
+            font-weight: 800;
+            background: linear-gradient(135deg, #e0eaff, #7fffd0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 2vw #00ffc3;
+            letter-spacing: 0.5vw;
+            line-height: 1.2;
+        }
+
+        .logo p {
+            font-size: clamp(0.9rem, 4vw, 3rem);
+            color: #6cffd0;
+            font-weight: bold;
+            font-family: monospace;
+            margin-top: 2vw;
+        }
+
+        /* φόρμα εισαγωγής */
+        .form-card {
+            background: #0a1022dd;
+            border-radius: 10vw;
+            padding: 7vw 6vw;
+            margin: 0 0 6vw 0;
+            border: 0.4vw solid #ffaa44;
+        }
+
+        .form-title {
+            font-size: clamp(1.3rem, 6vw, 4rem);
+            color: #ffdd99;
+            text-align: center;
+            margin-bottom: 6vw;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 6vw;
+        }
+
+        .input-group label {
+            font-size: clamp(1rem, 5vw, 3rem);
+            font-weight: bold;
+            color: #9effcf;
+            margin-bottom: 2vw;
+        }
+
+        .input-group input, .input-group datalist, .input-group select {
+            background: #010515;
+            border: 0.4vw solid #2cffaa;
+            border-radius: 10vw;
+            padding: 5vw 6vw;
+            color: #fff;
+            font-size: clamp(1.1rem, 5.5vw, 3.5rem);
+            font-family: monospace;
+            width: 100%;
+            outline: none;
+        }
+
+        .input-group input:focus {
+            border-color: #ffd966;
+            box-shadow: 0 0 0 1.5vw rgba(255,200,0,0.3);
+        }
+
+        .unit-hint {
+            font-size: clamp(0.8rem, 3.5vw, 2rem);
+            color: #88ffcc;
+            text-align: right;
+            margin-top: 2vw;
+        }
+
+        .btn {
+            border: none;
+            padding: 6vw 8vw;
+            font-size: clamp(1.3rem, 7vw, 4.5rem);
+            font-weight: bold;
+            border-radius: 20vw;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+            letter-spacing: 0.5vw;
+            transition: 0.1s linear;
+        }
+
+        .btn-primary {
+            background: #00775f;
+            border-bottom: 1.5vw solid #aaffdd;
+            color: white;
+            box-shadow: 0 2vw 0 #004d3b;
+        }
+
+        .btn-primary:active {
+            transform: translateY(1vw);
+            box-shadow: 0 1vw 0 #004d3b;
+        }
+
+        .btn-reset {
+            background: #3a2a2a;
+            border-bottom: 1.5vw solid #ff9966;
+            box-shadow: 0 2vw 0 #2a1e1e;
+        }
+
+        /* total overall */
+        .results-area {
+            background: #050a18dd;
+            border-radius: 12vw;
+            padding: 8vw 6vw;
+            margin-top: 6vw;
+            margin-bottom: 6vw;
+            border: 0.5vw solid gold;
+            box-shadow: 0 0 8vw rgba(255,215,0,0.6);
+        }
+
+        .results-title {
+            font-size: clamp(1.5rem, 8vw, 5rem);
+            text-align: center;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd966, #ffb347);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 8vw;
+        }
+
+        .total-box {
+            background: #000000aa;
+            padding: 6vw;
+            border-radius: 12vw;
+            text-align: center;
+            border: 0.5vw solid #ffcc44;
+        }
+
+        .total-label {
+            font-size: clamp(1rem, 5.5vw, 3.5rem);
+            color: #ffdd99;
+            margin-bottom: 2vw;
+        }
+
+        .total-number {
+            font-size: clamp(2rem, 14vw, 9rem);
+            font-weight: 800;
+            font-family: 'Orbitron', monospace;
+            color: #fff0b5;
+            text-shadow: 0 0 4vw #ffae00;
+        }
+
+        /* total per stock section */
+        .per-stock-area {
+            background: #0a1022cc;
+            border-radius: 10vw;
+            padding: 7vw 5vw;
+            margin: 6vw 0;
+            border: 0.4vw solid #2affb6;
+        }
+
+        .per-stock-title {
+            font-size: clamp(1.3rem, 6vw, 4rem);
+            text-align: center;
+            color: #ffdd99;
+            margin-bottom: 6vw;
+        }
+
+        .stock-summary-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 5vw;
+        }
+
+        .stock-card {
+            background: #0c1126;
+            border-radius: 8vw;
+            padding: 5vw;
+            border-left: 1.5vw solid #ffcc44;
+        }
+
+        .stock-name-header {
+            font-size: clamp(1.2rem, 5.5vw, 3.5rem);
+            font-weight: bold;
+            color: #ffdd99;
+            margin-bottom: 2vw;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .stock-total {
+            font-size: clamp(1rem, 5vw, 3rem);
+            color: #c0ffee;
+            font-family: monospace;
+        }
+
+        .stock-dates {
+            margin-top: 3vw;
+            font-size: clamp(0.8rem, 3.8vw, 2.2rem);
+            color: #bbd9ff;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4vw;
+            border-top: 0.2vw solid #2affb6;
+            padding-top: 3vw;
+        }
+
+        .date-amount {
+            background: #00000066;
+            border-radius: 8vw;
+            padding: 1.5vw 3vw;
+        }
+
+        /* λίστα αγορών */
+        .stored-section {
+            background: #050a18cc;
+            border-radius: 10vw;
+            padding: 7vw 5vw;
+            margin-top: 7vw;
+            border: 0.4vw solid #2affb6;
+        }
+
+        .stored-header {
+            font-size: clamp(1.3rem, 6vw, 4rem);
+            text-align: center;
+            color: #ffdd99;
+            margin-bottom: 6vw;
+        }
+
+        .purchase-card {
+            background: #0c1126;
+            border-radius: 8vw;
+            padding: 5vw;
+            margin-bottom: 6vw;
+            border-left: 1.5vw solid #ffcc44;
+        }
+
+        .purchase-date {
+            font-size: clamp(1rem, 4.5vw, 2.8rem);
+            font-weight: bold;
+            color: #ffdd99;
+            display: flex;
+            align-items: center;
+            gap: 3vw;
+            flex-wrap: wrap;
+            margin-bottom: 3vw;
+        }
+
+        .purchase-detail {
+            font-size: clamp(0.9rem, 4vw, 2.5rem);
+            color: #ccdeee;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 3vw;
+            margin-top: 2vw;
+        }
+
+        .stock-name {
+            background: #1f2a46;
+            padding: 1.5vw 4vw;
+            border-radius: 20vw;
+            font-weight: bold;
+            color: #c0ffee;
+        }
+
+        .amount-euro {
+            font-family: monospace;
+            font-size: clamp(1rem, 5vw, 3rem);
+            font-weight: 800;
+            color: #ffcc88;
+        }
+
+        .delete-btn {
+            background: #6a2a2a;
+            border: none;
+            padding: 2vw 5vw;
+            font-size: clamp(0.9rem, 4vw, 2rem);
+            border-radius: 10vw;
+            color: white;
+            cursor: pointer;
+        }
+
+        .export-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4vw;
+            justify-content: center;
+            margin: 5vw 0 4vw;
+        }
+
+        .export-btn {
+            background: #1f3a4a;
+            border: 0.3vw solid #ffaa44;
+            border-radius: 12vw;
+            padding: 3vw 6vw;
+            font-size: clamp(1rem, 4.5vw, 2.5rem);
+            font-weight: bold;
+            color: #ffdd99;
+            cursor: pointer;
+            text-align: center;
+            flex: 1;
+            min-width: 30vw;
+        }
+
+        .empty-msg {
+            color: #aaa;
+            font-size: clamp(0.9rem, 4vw, 2rem);
+            text-align: center;
+            padding: 5vw;
+        }
+
+        footer {
+            margin-top: 10vw;
+            text-align: center;
+            font-size: clamp(0.8rem, 3.5vw, 2rem);
+            color: #6a8cff;
+            border-top: 0.4vw solid cyan;
+            padding-top: 5vw;
+        }
+    </style>
+</head>
+<body>
+<div class="app-container">
+    <div class="header">
+        <div class="logo">
+            <h1>📊 ΑΓΟΡΕΣ ΜΕΤΟΧΩΝ 📈</h1>
+            <p>GKARAS FINANCE — PER STOCK ANALYSIS & QUICK SELECT</p>
+        </div>
+    </div>
+
+    <!-- Φόρμα εισαγωγής με datalist για επιλογή ονόματος μετοχής -->
+    <div class="form-card">
+        <div class="form-title">➕ ΚΑΤΑΧΩΡΗΣΗ ΑΓΟΡΑΣ</div>
+        <div class="input-group">
+            <label>📅 ΗΜΕΡΟΜΗΝΙΑ ΑΓΟΡΑΣ</label>
+            <input type="date" id="purchaseDate" value="">
+            <div class="unit-hint">επιλέξτε ημερομηνία</div>
+        </div>
+        <div class="input-group">
+            <label>🏷️ ΟΝΟΜΑ ΜΕΤΟΧΗΣ</label>
+            <input type="text" id="stockName" list="stockNamesList" placeholder="επιλέξτε ή πληκτρολογήστε νέα μετοχή" autocomplete="off">
+            <datalist id="stockNamesList"></datalist>
+            <div class="unit-hint">↺ επιλέξτε από υπάρχουσες μετοχές ή γράψτε νέα</div>
+        </div>
+        <div class="input-group">
+            <label>💰 ΠΟΣΟ ΑΓΟΡΑΣ (€)</label>
+            <input type="number" id="amount" step="0.01" placeholder="0.00" value="">
+            <div class="unit-hint">σε Ευρώ (€)</div>
+        </div>
+        <button class="btn btn-primary" id="addPurchaseBtn">➕ ΠΡΟΣΘΗΚΗ ΑΓΟΡΑΣ</button>
+    </div>
+
+    <!-- Συνολικό ποσό επένδυσης (όλων των εποχών) -->
+    <div class="results-area">
+        <div class="results-title">💎 ΣΥΝΟΛΙΚΟ ΚΕΦΑΛΑΙΟ</div>
+        <div class="total-box">
+            <div class="total-label">ΣΥΝΟΛΟ ΑΓΟΡΩΝ (ΟΛΩΝ ΤΩΝ ΕΠΟΧΩΝ)</div>
+            <div class="total-number" id="totalAmount">0.00</div>
+            <div class="total-unit">Ευρώ (€)</div>
+        </div>
+    </div>
+
+    <!-- Πρόσθετη ενότητα: Σύνολο ανά μετοχή + ανάλυση ανά ημερομηνία -->
+    <div class="per-stock-area" id="perStockArea">
+        <div class="per-stock-title">📊 ΣΥΝΟΛΟ ΑΝΑ ΜΕΤΟΧΗ & ΑΝΑΛΥΣΗ ΗΜΕΡΟΜΗΝΙΩΝ</div>
+        <div id="perStockContainer"></div>
+    </div>
+
+    <!-- Ιστορικό αγορών (ημερομηνίες & ονόματα) -->
+    <div class="stored-section">
+        <div class="stored-header">📋 ΙΣΤΟΡΙΚΟ ΑΓΟΡΩΝ (ΗΜΕΡ/ΝΙΑ & ΟΝΟΜΑ ΜΕΤΟΧΗΣ)</div>
+        <div id="purchasesList"></div>
+        <div class="export-buttons">
+            <button class="export-btn" id="printBtn">🖨️ ΕΚΤΥΠΩΣΗ</button>
+            <button class="export-btn" id="excelBtn">📊 EXCEL (XLS)</button>
+            <button class="export-btn" id="csvBtn">📄 CSV</button>
+        </div>
+        <button id="clearAllBtn" class="delete-btn" style="background:#4a2a2a; width:100%; margin-top:4vw;">🗑 ΕΚΚΑΘΑΡΙΣΗ ΟΛΩΝ ΤΩΝ ΑΓΟΡΩΝ</button>
+    </div>
+    <footer>© GKARAS FINANCE | Αυτόματη αποθήκευση | Επιλογή μετοχής από λίστα | Ανάλυση ανά μετοχή & ημερομηνία</footer>
+</div>
+
+<script>
+    // Δομή: κάθε εγγραφή έχει id, date (YYYY-MM-DD), stockName (string), amount (number)
+    let purchases = [];
+
+    // Φόρτωση από localStorage
+    function loadPurchases() {
+        const stored = localStorage.getItem("stock_purchases_v2");
+        if (stored) {
+            purchases = JSON.parse(stored);
+        } else {
+            // Δείγμα δεδομένων για επίδειξη
+            purchases = [
+                { id: Date.now() + 1, date: "2025-01-15", stockName: "Apple Inc.", amount: 1250.75 },
+                { id: Date.now() + 2, date: "2025-02-20", stockName: "Tesla Motors", amount: 2340.00 },
+                { id: Date.now() + 3, date: "2025-03-10", stockName: "Εθνική Τράπεζα", amount: 890.50 },
+                { id: Date.now() + 4, date: "2025-03-25", stockName: "Apple Inc.", amount: 430.20 },
+                { id: Date.now() + 5, date: "2025-04-01", stockName: "Microsoft", amount: 3120.00 }
+            ];
+            savePurchases();
+        }
+        updateStockDatalist();
+    }
+
+    function savePurchases() {
+        localStorage.setItem("stock_purchases_v2", JSON.stringify(purchases));
+    }
+
+    // Ενημέρωση του datalist με μοναδικά ονόματα μετοχών από τις υπάρχουσες αγορές
+    function updateStockDatalist() {
+        const uniqueNames = [...new Set(purchases.map(p => p.stockName).filter(name => name && name.trim() !== ""))];
+        const datalist = document.getElementById("stockNamesList");
+        if (datalist) {
+            datalist.innerHTML = "";
+            uniqueNames.forEach(name => {
+                const option = document.createElement("option");
+                option.value = name;
+                datalist.appendChild(option);
+            });
+        }
+    }
+
+    // Υπολογισμός συνολικού ποσού όλων των αγορών
+    function calculateTotal() {
+        return purchases.reduce((sum, p) => sum + p.amount, 0);
+    }
+
+    // Ομαδοποίηση ανά μετοχή: { stockName, totalAmount, purchases: [{date, amount}] }
+    function getPerStockData() {
+        const map = new Map(); // key = stockName (ή "Χωρίς όνομα" για κενά)
+        for (let p of purchases) {
+            let key = p.stockName && p.stockName.trim() !== "" ? p.stockName.trim() : "Χωρίς όνομα";
+            if (!map.has(key)) {
+                map.set(key, { stockName: key, totalAmount: 0, purchases: [] });
+            }
+            const entry = map.get(key);
+            entry.totalAmount += p.amount;
+            entry.purchases.push({ date: p.date, amount: p.amount, id: p.id });
+        }
+        // Ταξινόμηση αγορών κάθε μετοχής κατά ημερομηνία (αύξουσα)
+        for (let [_, data] of map.entries()) {
+            data.purchases.sort((a, b) => a.date.localeCompare(b.date));
+        }
+        // Επιστροφή πίνακα ταξινομημένου κατά συνολικό ποσό (φθίνουσα) ή αλφαβητικά
+        return Array.from(map.values()).sort((a, b) => b.totalAmount - a.totalAmount);
+    }
+
+    // Εμφάνιση του πίνακα ανά μετοχή με αναλυτικά ποσά ανά ημερομηνία
+    function renderPerStock() {
+        const container = document.getElementById("perStockContainer");
+        if (!container) return;
+        const perStock = getPerStockData();
+        if (perStock.length === 0) {
+            container.innerHTML = `<div class="empty-msg">📭 Δεν υπάρχουν καταχωρημένες μετοχές.</div>`;
+            return;
+        }
+        let html = `<div class="stock-summary-grid">`;
+        for (let stock of perStock) {
+            // Μορφοποίηση ημερομηνιών
+            let datesHtml = `<div class="stock-dates"><span>📅 ανά ημερομηνία:</span>`;
+            for (let buy of stock.purchases) {
+                const formattedDate = buy.date.split("-").reverse().join("/");
+                datesHtml += `<div class="date-amount">${formattedDate} : ${buy.amount.toFixed(2)} €</div>`;
+            }
+            datesHtml += `</div>`;
+            html += `
+                <div class="stock-card">
+                    <div class="stock-name-header">
+                        <span>🏢 ${escapeHtml(stock.stockName)}</span>
+                        <span class="stock-total">💶 Σύνολο: ${stock.totalAmount.toFixed(2)} €</span>
+                    </div>
+                    ${datesHtml}
+                </div>
+            `;
+        }
+        html += `</div>`;
+        container.innerHTML = html;
+    }
+
+    // Κύρια λίστα αγορών (χρονολογική, πιο πρόσφατες πρώτα)
+    function renderPurchasesList() {
+        const container = document.getElementById("purchasesList");
+        if (!container) return;
+        if (purchases.length === 0) {
+            container.innerHTML = `<div class="empty-msg">📭 Δεν υπάρχουν καταγεγραμμένες αγορές. Προσθέστε την πρώτη σας συναλλαγή!</div>`;
+            return;
+        }
+        // ταξινόμηση: νεότερη πρώτη
+        const sorted = [...purchases].sort((a, b) => b.date.localeCompare(a.date) || b.id - a.id);
+        let html = "";
+        for (let p of sorted) {
+            let formattedDate = p.date.split("-").reverse().join("/");
+            const stockDisplay = p.stockName && p.stockName.trim() !== "" ? p.stockName.trim() : "— (χωρίς όνομα)";
+            html += `
+                <div class="purchase-card" data-id="${p.id}">
+                    <div class="purchase-date">📆 ${formattedDate}</div>
+                    <div class="purchase-detail">
+                        <span class="stock-name">🏢 ${escapeHtml(stockDisplay)}</span>
+                        <span class="amount-euro">💶 ${p.amount.toFixed(2)} €</span>
+                        <button class="delete-btn" data-id="${p.id}">🗑 ΔΙΑΓΡΑΦΗ</button>
+                    </div>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+        // Προσθήκη event listeners για διαγραφή
+        document.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = parseInt(btn.getAttribute('data-id'));
+                deletePurchaseById(id);
+            });
+        });
+    }
+
+    function deletePurchaseById(id) {
+        const newPurchases = purchases.filter(p => p.id !== id);
+        if (newPurchases.length !== purchases.length) {
+            purchases = newPurchases;
+            savePurchases();
+            refreshAllUI();
+        }
+    }
+
+    // Προσθήκη νέας αγοράς με επιλογή από datalist ή νέο όνομα
+    function addPurchase() {
+        const dateInput = document.getElementById("purchaseDate").value;
+        let stockNameInput = document.getElementById("stockName").value.trim();
+        const amountInput = document.getElementById("amount").value;
+
+        // Ημερομηνία: αν κενή, σημερινή
+        let finalDate = dateInput;
+        if (!finalDate) {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            finalDate = `${yyyy}-${mm}-${dd}`;
+        } else if (!/^\d{4}-\d{2}-\d{2}$/.test(finalDate)) {
+            alert("Η ημερομηνία πρέπει να είναι σε μορφή ΕΕΕΕ-ΜΜ-ΗΗ (π.χ. 2025-03-20)");
+            return;
+        }
+
+        // Ποσό έλεγχος
+        let amountValue = parseFloat(amountInput);
+        if (isNaN(amountValue) || amountValue <= 0) {
+            alert("Εισάγετε έγκυρο ποσό αγοράς (μεγαλύτερο του 0).");
+            return;
+        }
+        amountValue = Math.round(amountValue * 100) / 100;
+
+        // Αν το όνομα είναι κενό, το αφήνουμε κενό (θα εμφανίζεται ως "Χωρίς όνομα")
+        if (stockNameInput === "") {
+            stockNameInput = "";
+        }
+
+        const newPurchase = {
+            id: Date.now(),
+            date: finalDate,
+            stockName: stockNameInput,
+            amount: amountValue
+        };
+
+        purchases.push(newPurchase);
+        savePurchases();
+
+        // Καθαρισμός φόρμας: κρατάμε μόνο το ποσό, ημερομηνία σήμερα, όνομα μετοχής αφήνουμε κενό
+        document.getElementById("stockName").value = "";
+        document.getElementById("amount").value = "";
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        document.getElementById("purchaseDate").value = `${yyyy}-${mm}-${dd}`;
+
+        refreshAllUI();
+    }
+
+    // Ενημέρωση όλων των τμημάτων UI
+    function refreshAllUI() {
+        // Ενημέρωση συνολικού ποσού
+        const total = calculateTotal();
+        document.getElementById("totalAmount").innerText = total.toFixed(2) + " €";
+        // Ενημέρωση datalist με υπάρχουσες μετοχές
+        updateStockDatalist();
+        // Ενημέρωση αναλυτικής ενότητας ανά μετοχή + ποσά ανά ημερομηνία
+        renderPerStock();
+        // Ενημέρωση χρονολογικής λίστας
+        renderPurchasesList();
+    }
+
+    // Εκκαθάριση όλων των δεδομένων
+    function clearAllPurchases() {
+        if (confirm("⚠️ Διαγραφή ΟΛΩΝ των καταχωρήσεων αγορών μετοχών. Είστε σίγουρος;")) {
+            purchases = [];
+            savePurchases();
+            refreshAllUI();
+        }
+    }
+
+    // ----- Εξαγωγή CSV / EXCEL / ΕΚΤΥΠΩΣΗ -----
+    function getCSVString() {
+        let headers = ["Ημερομηνία (YYYY-MM-DD)", "Όνομα Μετοχής", "Ποσό (€)"];
+        let rows = [headers];
+        const sortedForExport = [...purchases].sort((a,b) => a.date.localeCompare(b.date));
+        for (let p of sortedForExport) {
+            rows.push([
+                p.date,
+                p.stockName && p.stockName.trim() !== "" ? p.stockName : "",
+                p.amount.toFixed(2)
+            ]);
+        }
+        return rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",")).join("\n");
+    }
+
+    function exportCSV() {
+        if (purchases.length === 0) { alert("Δεν υπάρχουν δεδομένα προς εξαγωγή."); return; }
+        const csv = getCSVString();
+        const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute("download", "agores_metoxon.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    function exportExcel() {
+        if (purchases.length === 0) { alert("Δεν υπάρχουν δεδομένα για Excel."); return; }
+        const csv = getCSVString();
+        const blob = new Blob(["\uFEFF" + csv], { type: "application/vnd.ms-excel" });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute("download", "agores_metoxon.xls");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    }
+
+    function printPurchases() {
+        if (purchases.length === 0) { alert("Δεν υπάρχουν δεδομένα για εκτύπωση."); return; }
+        const total = calculateTotal();
+        const perStock = getPerStockData();
+        let perStockHtml = "";
+        for (let stock of perStock) {
+            perStockHtml += `<div style="margin-bottom: 1rem; border-left: 4px solid #ffcc44; padding-left: 1rem;">
+                <strong>🏢 ${escapeHtml(stock.stockName)}</strong> — Σύνολο: ${stock.totalAmount.toFixed(2)} €<br/>
+                📅 Αναλυτικά: `;
+            for (let buy of stock.purchases) {
+                perStockHtml += `${buy.date.split("-").reverse().join("/")}: ${buy.amount.toFixed(2)}€ | `;
+            }
+            perStockHtml += `</div>`;
+        }
+
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head><meta charset="UTF-8"><title>Αγορές Μετοχών - Αναφορά</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 2rem; }
+            h1 { color: #1f3a4a; }
+            table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+            th, td { border: 1px solid #888; padding: 6px 10px; text-align: left; }
+            th { background: #2c3e50; color: white; }
+            .total { margin-top: 20px; font-size: 1.2rem; font-weight: bold; }
+            .perstock { margin-top: 30px; background: #f4f4f4; padding: 1rem; border-radius: 10px; }
+        </style>
+        </head>
+        <body>
+        <h1>📊 Ιστορικό Αγορών Μετοχών</h1>
+        <p>Εκτύπωση: ${new Date().toLocaleString('el-GR')}</p>
+        <h2>Συνολικό Κεφάλαιο: ${total.toFixed(2)} €</h2>
+        <div class="perstock"><h3>📌 Σύνολο ανά Μετοχή & ανάλυση ημερομηνιών</h3>${perStockHtml}</div>
+        <h3>📋 Αναλυτική λίστα αγορών</h3>
+        <table><thead><tr><th>Ημερομηνία</th><th>Μετοχή</th><th>Ποσό (€)</th></tr></thead><tbody>
+        ${[...purchases].sort((a,b)=>b.date.localeCompare(a.date)).map(p => `<tr><td>${p.date}</td><td>${p.stockName || "—"}</td><td>${p.amount.toFixed(2)}</td></tr>`).join('')}
+        </tbody></table>
+        </body></html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
+    }
+
+    function escapeHtml(str) {
+        if (!str) return "";
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    function setDefaultDate() {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        const dateField = document.getElementById("purchaseDate");
+        if (dateField) dateField.value = `${yyyy}-${mm}-${dd}`;
+    }
+
+    // Αρχικοποίηση
+    function init() {
+        loadPurchases();
+        setDefaultDate();
+        refreshAllUI();
+        document.getElementById("addPurchaseBtn").addEventListener("click", addPurchase);
+        document.getElementById("clearAllBtn").addEventListener("click", clearAllPurchases);
+        document.getElementById("csvBtn").addEventListener("click", exportCSV);
+        document.getElementById("excelBtn").addEventListener("click", exportExcel);
+        document.getElementById("printBtn").addEventListener("click", printPurchases);
+    }
+    init();
+</script>
+</body>
+</html>
